@@ -1,0 +1,75 @@
+.mainContainer {
+  height: 670px;
+  width: 800px;
+  &__topLine {
+    display: flex;
+    justify-content: space-between;
+    &__inputTodo {
+      padding-left: 10px;
+      height: 32px;
+      width: 520px;
+      border-radius: 4px;
+      border: 1px solid #c1bfbf;
+    }
+    &__addButton {
+      width: 250px;
+      height: 35px;
+      background-color: #119cf3;
+      border-radius: 4px;
+      color: white;
+      padding: 0;
+    }
+  }
+  &__todos {
+    margin-top: 45px;
+    height: 635px;
+    border: 1px solid #c1bfbf;
+    &__name {
+      display: flex;
+      justify-content: left;
+      align-items: center;
+      border-bottom: 1px solid #c1bfbf;
+      height: 55px;
+      padding-left: 30px;
+      font-size: 17px;
+      font-weight: bold;
+    }
+    &__box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+
+      &__todo {
+        height: 50px;
+        border-bottom: 1px solid #c1bfbf;
+        width: 750px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+    }
+  }
+}
+.todoLeftMenu {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  &__picture {
+    height: 35px;
+  }
+}
+.deleteButton {
+  height: 30px;
+  width: 45px;
+  border: 1px solid #c1bfbf;
+  background-color: #f3f2f2;
+  border-radius: 3px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.deleteButton img {
+  width: 20px;
+  height: 20px;
+}
