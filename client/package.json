@@ -5,7 +5,6 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "devserv": "ts-node backend/server/server.js",
     "build": "tsc -b && vite build",
     "lint": "eslint ",
     "preview": "vite preview"

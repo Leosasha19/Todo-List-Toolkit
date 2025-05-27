@@ -1,4 +1,4 @@
-import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
+import {createAsyncThunk, createSlice, PayloadAction} from "@reduxjs/toolkit";
 import axios from "axios";
 import {RootState} from "../redux/store/store.ts";
 
@@ -11,14 +11,14 @@ export interface Todo {
 export interface TodosState {
     todos: Todo[];
     currentTodo: Todo;
-    error: string | null;
+    error: string;
     loading: boolean;
 }
 
 export const initialState: TodosState = {
     todos: [],
     currentTodo: {id: null, completed: false, description: ''},
-    error: null,
+    error: "",
     loading: false,
 }
 
@@ -27,7 +27,7 @@ export const getTodos = createAsyncThunk("todos/getTodos",
     try {
         const response = await axios.get("http://localhost:5001/todos")
         return response.data
-    } catch (error:any) {
+    } catch (error) {
         return rejectWithValue(error.response?.data || "Ошибка при загрузке Todos")
     }})
 
@@ -38,7 +38,7 @@ export const addTodo = createAsyncThunk("todos/addTodo",
             description
         })
         return response.data
-    } catch (error:any) {
+    } catch (error) {
         return rejectWithValue(error.response?.data || "Ошибка при добавлении Todo")
     }})
 
@@ -47,7 +47,7 @@ export const deleteTodo = createAsyncThunk("todos/deleteTodo",
     try {
          await axios.delete(`http://localhost:5001/todos/${id}`)
         return id;
-    } catch (error:any) {
+    } catch (error) {
         return rejectWithValue(error.response?.data || "Ошибка при удалении задачи")
     }})
 
@@ -56,7 +56,7 @@ export const changeCompletedTodo = createAsyncThunk("todos/changeCompleted",
         try {
             const response = await axios.put(`http://localhost:5001/todos/${id}`)
             return response.data
-        } catch (error:any) {
+        } catch (error) {
             return rejectWithValue(error.response?.data || "Ошибка при изменении статуса completed")
         }
     })
@@ -68,7 +68,7 @@ export const changeDescriptionTodo = createAsyncThunk("todo/changeDescription",
                 description: newDescription
             })
             return response.data
-      } catch (error:any) {
+      } catch (error) {
             return rejectWithValue(error.response?.data || "Ошибка при изменении description")
         }
     })
@@ -83,57 +83,57 @@ export const TodoStateSlice = createSlice({
             .addCase(getTodos.pending, (state) => {
                 state.loading = true
             })
-            .addCase(getTodos.fulfilled, (state , action) => {
+            .addCase(getTodos.fulfilled, (state , action: PayloadAction<Todo>) => {
                 state.todos = action.payload;
                     state.loading = false
             })
-            .addCase(getTodos.rejected, (state, action) => {
+            .addCase(getTodos.rejected, (state, action: PayloadAction<string>) => {
                 state.loading = false;
-                state.error = action.payload as string;
+                state.error = action.payload;
             })
             .addCase(addTodo.pending, (state) => {
                 state.loading = true
             })
-            .addCase(addTodo.fulfilled, (state, action) => {
+            .addCase(addTodo.fulfilled, (state, action:PayloadAction<Todo>) => {
                 state.todos.push(action.payload)
                 state.loading = false
             })
-            .addCase(addTodo.rejected, (state, action) => {
+            .addCase(addTodo.rejected, (state, action: PayloadAction<string>) => {
                 state.loading = false;
-                state.error = action.payload as string
+                state.error = action.payload
             })
             .addCase(deleteTodo.pending, (state) => {
                 state.loading = true;
             })
-            .addCase(deleteTodo.fulfilled, (state, action) => {
+            .addCase(deleteTodo.fulfilled, (state, action: PayloadAction<number>) => {
                 state.todos = state.todos.filter(todo => todo.id !== action.payload);
                 state.loading = false;
             })
-            .addCase(deleteTodo.rejected, (state, action) => {
+            .addCase(deleteTodo.rejected, (state, action: PayloadAction<string>) => {
                 state.loading = false;
-                state.error = action.payload as string;
+                state.error = action.payload
             })
             .addCase(changeCompletedTodo.pending, (state) => {
                 state.loading = true;
             })
-            .addCase(changeCompletedTodo.fulfilled, (state, action) => {
+            .addCase(changeCompletedTodo.fulfilled, (state, action: PayloadAction<Todo>) => {
                 state.loading = false;
                 state.todos = state.todos.map((todo) => todo.id === action.payload.id ? {...todo, completed: action.payload.completed} : todo)
             })
-            .addCase(changeCompletedTodo.rejected, (state, action) => {
+            .addCase(changeCompletedTodo.rejected, (state, action: PayloadAction<string>) => {
                 state.loading = false;
-                state.error = action.payload as string;
+                state.error = action.payload;
             })
             .addCase(changeDescriptionTodo.pending, (state) => {
                 state.loading = true;
             })
-            .addCase(changeDescriptionTodo.fulfilled, (state, action) => {
+            .addCase(changeDescriptionTodo.fulfilled, (state, action: PayloadAction<Todo>) => {
                 state.loading = false;
                 state.todos = state.todos.map((todo) => todo.id === action.payload.id ? {...todo, ...action.payload} : todo)
             })
-            .addCase(changeDescriptionTodo.rejected, (state, action) => {
+            .addCase(changeDescriptionTodo.rejected, (state, action: PayloadAction<string>) => {
                 state.loading = false;
-                state.error = action.payload as string;
+                state.error = action.payload;
             })
     }
 })
