@@ -1,25 +1,37 @@
 import cors from 'cors';
+import 'dotenv/config';
 import express from 'express';
 import { Sequelize } from 'sequelize';
 
 import TodoModel from '../db/models/todo.js';
 
 const app = express();
+dotenv.config();
 
 app.use(
   cors({
     origin: 'http://localhost:5173',
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
     allowedHeaders: ['Content-Type'],
   })
 );
 
 app.use(express.json());
 
-const sequelize = new Sequelize('todolist2', 'postgres', '1234', {
-  host: 'localhost',
-  dialect: 'postgres',
-});
+const sequelize = process.env.DATABASE_URL
+  ? new Sequelize(process.env.DATABASE_URL, {
+      dialect: 'postgres',
+      dialectOptions: { ssl: { require: true, rejectUnauthorized: false } },
+      logging: false,
+    })
+  : new Sequelize(process.env.DB_NAME, process.env.DB_USERNAME, process.env.DB_PASSWORD, {
+      host: process.env.DB_HOST,
+      dialect: process.env.DB_DIALECT || 'postgres',
+      port: process.env.DB_PORT ? Number(process.env.DB_PORT) : 5432,
+      logging: false,
+    });
+
+const Todo = TodoModel(sequelize, Sequelize.DataTypes);
 
 sequelize
   .authenticate()
@@ -29,8 +41,6 @@ sequelize
   .sync({ force: false })
   .then(() => console.log('Database synchronized'))
   .catch((err) => console.error('Error during synchronization:', err));
-
-const Todo = TodoModel(sequelize, Sequelize.DataTypes);
 
 app.get('/todos', async (req, res) => {
   try {
@@ -48,7 +58,7 @@ app.post('/todos', async (req, res) => {
   try {
     const { description, completed } = req.body;
     if (!description) {
-      res.status(400).json({ error: 'ОПИСАНИЕ ОБЯЗАТЕЛЬНО' });
+      return res.status(400).json({ error: 'ОПИСАНИЕ ОБЯЗАТЕЛЬНО' });
     }
     const newDescription = await Todo.create({
       description,
@@ -109,7 +119,7 @@ app.patch('/todos/:id', async (req, res) => {
   }
 });
 
-const PORT = 5001;
+const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => {
   console.log(`Server started on port ${PORT}`);
 });
