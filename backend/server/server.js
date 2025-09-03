@@ -1,5 +1,5 @@
 import cors from 'cors';
-import 'dotenv/config';
+import dotenv from 'dotenv';
 import express from 'express';
 import { Sequelize } from 'sequelize';
 
