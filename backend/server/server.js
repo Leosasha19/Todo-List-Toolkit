@@ -6,7 +6,7 @@ import { Sequelize } from 'sequelize';
 import TodoModel from '../db/models/todo.js';
 
 const app = express();
-dotenv.config();
+dotenv.config({ path: './server/.env' });
 
 app.use(
   cors({
