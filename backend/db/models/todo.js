@@ -1,4 +1,4 @@
-import { Model } from "sequelize";
+import { Model } from 'sequelize';
 
 export default (sequelize, DataTypes) => {
   class Todo extends Model {
@@ -11,18 +11,21 @@ export default (sequelize, DataTypes) => {
       // define association here
     }
   }
-  Todo.init({
-    description: {
-      type:DataTypes.TEXT,
-      allowNull:false,
-    } ,
-    completed: {
-      type:DataTypes.BOOLEAN,
-      allowNull: false,
+  Todo.init(
+    {
+      description: {
+        type: DataTypes.TEXT,
+        allowNull: false,
+      },
+      completed: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+      },
+    },
+    {
+      sequelize,
+      modelName: 'Todo',
     }
-  }, {
-    sequelize,
-    modelName: 'Todo',
-  });
+  );
   return Todo;
 };
